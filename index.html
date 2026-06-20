@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>余白 ─ 空ける</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#4a3f44; --ink-soft:#8f8088; --ink-faint:#c7b2bd; --line:rgba(190,150,180,.20);
+    --c1:#ff9a5a; --c2:#ff6fae; --c3:#b07cff; --c4:#5aa9f0; --c5:#3fc8a0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;color:var(--ink);
+    background:
+      radial-gradient(120% 60% at 50% -8%, rgba(255,255,255,.92), rgba(255,255,255,0) 55%),
+      linear-gradient(165deg,#fff3e9 0%,#ffe0ee 26%,#f0dcff 50%,#dcebff 74%,#dcf6e8 100%) fixed;
+    min-height:100vh;line-height:2;letter-spacing:.04em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:440px;margin:0 auto;padding:38px 24px 80px;min-height:100vh}
+  .brand{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:13px;letter-spacing:.3em;color:var(--c2);text-align:center}
+  .screen{display:none;animation:fade .6s ease}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .hero{text-align:center;padding:34px 0 8px}
+  .hero h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:34px;letter-spacing:.34em;
+    background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4),var(--c5));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .ja{font-size:13px;letter-spacing:.5em;color:var(--ink-faint);margin-top:8px}
+  .lead{text-align:center;font-size:15px;line-height:2.3;color:var(--ink-soft);margin:26px 8px}
+  .lead b{color:var(--ink);font-weight:500}
+  .ornament{text-align:center;font-size:20px;margin:14px 0;background:linear-gradient(90deg,var(--c1),var(--c3),var(--c5));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .btn{display:block;width:100%;border:0;border-radius:999px;padding:17px;font-family:inherit;font-size:15.5px;font-weight:600;letter-spacing:.12em;cursor:pointer;color:#fff;
+    background:linear-gradient(120deg,var(--c1),var(--c2),var(--c3),var(--c4));background-size:220% 100%;
+    box-shadow:0 12px 30px -10px rgba(200,110,170,.55);transition:.2s;margin-top:14px;animation:flow 7s ease infinite}
+  @keyframes flow{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+  .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.4;box-shadow:none;cursor:default;animation:none}
+  .btn--ghost{color:var(--c3);background:transparent;box-shadow:none;border:1px solid var(--line);font-weight:500;font-size:13.5px;padding:13px;animation:none}
+  .qh{text-align:center;font-size:16px;color:var(--ink);margin:28px 0 4px}
+  .qh small{display:block;font-family:"Cormorant Garamond",serif;font-style:italic;font-size:12px;color:var(--ink-faint);letter-spacing:.24em;margin-top:6px}
+  .step{text-align:center;font-size:12px;color:var(--ink-faint);letter-spacing:.2em;margin-top:20px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:20px 0}
+  .chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:rgba(255,255,255,.8);border-radius:999px;padding:11px 18px;font-family:inherit;font-size:14.5px;color:var(--ink-soft);cursor:pointer;transition:.25s}
+  .chip.on{color:#fff;border-color:transparent}
+  .field{margin:6px 0 0}
+  .field input{width:100%;font-family:inherit;font-size:15px;color:var(--ink);background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:14px;padding:13px 15px;text-align:center}
+  .field input::placeholder{color:var(--ink-faint)}
+  .wsub{text-align:center;font-size:14.5px;color:var(--ink);font-weight:500;margin:26px 0 2px}
+  .wcard{background:rgba(255,255,255,.66);border:1px solid var(--line);border-radius:18px;padding:14px 16px 12px;margin:12px 0;border-left:5px solid}
+  .wcard label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);font-weight:500;margin-bottom:7px}
+  .wcard textarea{width:100%;font-family:inherit;font-size:14px;line-height:1.9;color:var(--ink);background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical;min-height:52px}
+  .wcard textarea::placeholder{color:var(--ink-faint)}
+  .space{position:relative;height:200px;display:flex;align-items:center;justify-content:center;margin:14px 0}
+  .ring{position:absolute;border:2px solid;border-radius:50%;opacity:0;animation:open 2.6s ease forwards}
+  @keyframes open{0%{width:8px;height:8px;opacity:0}20%{opacity:.6}100%{width:250px;height:250px;opacity:0}}
+  .done-stamp{font-size:42px;animation:pop .7s ease}
+  @keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+  .done-msg{text-align:center;font-size:15px;line-height:2.2;color:var(--ink-soft);margin:6px 14px 0}
+  .done-msg b{color:var(--ink);font-weight:500}
+  .panel{background:rgba(255,255,255,.62);border:1px solid var(--line);border-radius:22px;padding:24px 20px;margin:26px 0 0;backdrop-filter:blur(5px)}
+  .panel .t{font-family:"Cormorant Garamond",serif;font-style:italic;letter-spacing:.2em;color:var(--c3);font-size:13px;text-align:center}
+  .meter-n{text-align:center;font-size:14px;color:var(--ink);margin:10px 0 8px}
+  .meter-n b{font-family:"Cormorant Garamond",serif;font-size:30px;color:var(--c2);margin:0 4px}
+  .bar{height:9px;border-radius:6px;background:rgba(200,150,180,.14);overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4),var(--c5));transition:width 1s ease}
+  .cal{margin-top:20px}
+  .cal-h{text-align:center;font-family:"Cormorant Garamond",serif;font-style:italic;font-size:13px;letter-spacing:.16em;color:var(--ink-faint);margin-bottom:10px}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .cell{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink-faint);border-radius:50%}
+  .cell.on{background:rgba(255,255,255,.72);box-shadow:0 3px 9px -4px rgba(180,120,160,.5)}
+  .cell .stamp{font-size:15px;line-height:1}
+  .note{text-align:center;font-size:11.5px;color:var(--ink-faint);line-height:1.9;margin-top:14px}
+  .foot{text-align:center;font-size:11px;color:var(--ink-faint);margin-top:30px;letter-spacing:.1em}
+  .copyr{text-align:center;font-size:11px;color:var(--ink-faint);opacity:.9;line-height:1.8;margin-top:30px;padding-bottom:8px}
+  .repList .row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .repList .row b{font-family:"Cormorant Garamond",serif;font-size:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Be Grace</div>
+
+  <!-- ホーム -->
+  <section class="screen active" id="s-home">
+    <div class="hero"><h1>YOHAKU</h1><div class="ja">余 白</div></div>
+    <p class="lead">受け取りたいなら、<br>まず ひとつ、<b>手放す</b>。<br><br>空けた余白に、<br><b>感じたい気持ち</b>を 入れていく。</p>
+    <div class="ornament">✦</div>
+    <button class="btn" id="go1">今日、ひとつ空ける</button>
+    <button class="btn btn--ghost" id="toWish">💭 わたしのリストを書く・見る</button>
+
+    <div class="panel">
+      <div class="t">This month</div>
+      <div class="meter-n">今月、<b id="mCount">0</b>日 空けました</div>
+      <div class="bar"><i id="mBar" style="width:0%"></i></div>
+      <div class="cal">
+        <div class="cal-h" id="calH"></div>
+        <div class="grid" id="cal"></div>
+      </div>
+      <p class="note">空けた日に、スタンプ。<br>印のない日も、余白。<br>埋めなくて、いい。すきまも、また余白🤍</p>
+    </div>
+    <button class="btn btn--ghost" id="toReport" style="margin-top:16px">今月の余白を、ふりかえる</button>
+    <p class="foot">手放して、受け取る。余白の、ひと巡り。</p>
+  </section>
+
+  <!-- わたしのリスト -->
+  <section class="screen" id="s-wish">
+    <div class="qh">わたしを、書こう<small>MY LISTS</small></div>
+    <p class="lead" style="font-size:13px;margin:14px 8px 0">まず、自分の願いに向き合う。<br>大きな願いも、小さなことも、なんでもOK🤍</p>
+    <div id="wishForm"></div>
+    <button class="btn" id="saveWish">保存する</button>
+    <button class="btn btn--ghost" id="wishHome">ホームへ</button>
+  </section>
+
+  <!-- ①手放す -->
+  <section class="screen" id="s-release">
+    <div class="qh">今日、ひとつ 手放そう<small>LET GO</small></div>
+    <div class="step">① 手放す</div>
+    <div class="chips" id="relChips"></div>
+    <div class="field"><input id="relText" placeholder="ふと浮かんだこと、自由に書いてOK🤍" /></div>
+    <button class="btn" id="go2" disabled>これを、空ける</button>
+    <button class="btn btn--ghost" id="back1">もどる</button>
+  </section>
+
+  <!-- ②感じたい感情を入れる -->
+  <section class="screen" id="s-feel">
+    <div class="qh">空いた余白に、<br>感じたい気持ちを 入れよう<small>RECEIVE</small></div>
+    <div class="step">② 受け取る</div>
+    <div class="chips" id="feelChips"></div>
+    <div class="field"><input id="feelText" placeholder="自分の言葉で書いてもOK" /></div>
+    <button class="btn" id="go3" disabled>余白に、入れる</button>
+    <button class="btn btn--ghost" id="back2">もどる</button>
+  </section>
+
+  <!-- 完了 -->
+  <section class="screen" id="s-done">
+    <div class="space" id="space"><div class="done-stamp" id="doneStamp">✦</div></div>
+    <p class="done-msg" id="doneMsg"></p>
+    <button class="btn" id="toHome" style="margin-top:26px">ホームへ</button>
+  </section>
+
+  <!-- レポート -->
+  <section class="screen" id="s-report">
+    <div class="hero" style="padding:24px 0 0"><h1 style="font-size:24px">REPORT</h1><div class="ja">今月の余白</div></div>
+    <div id="reportBody"></div>
+    <button class="btn" id="repHome" style="margin-top:24px">ホームへ</button>
+  </section>
+
+  <p class="copyr">無断転載・複製・転用・転売を禁じます<br>© Be Grace</p>
+</div>
+
+<script>
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var RKEY="yohaku_records", WKEY="yohaku_wishes";
+var CATS=[
+  {n:"Beauty & Health",c:"#ec6fa0",s:"🌸"},
+  {n:"お役目",c:"#5aa9f0",s:"💫"},
+  {n:"人間関係",c:"#f0735f",s:"💗"},
+  {n:"お金",c:"#f0b13a",s:"💰"},
+  {n:"欲しい物",c:"#3fc8a0",s:"🎁"},
+  {n:"夢",c:"#b07cff",s:"🌟"}
+];
+var RELEASES=["やること","考えすぎ","持ちもの","人の目","がんばり"];
+var FEELINGS=[
+  {n:"ときめき",c:"#ec6fa0",s:"💗"},
+  {n:"やすらぎ",c:"#3fc8a0",s:"🍃"},
+  {n:"よろこび",c:"#f0b13a",s:"✨"},
+  {n:"自由",c:"#5aa9f0",s:"🦋"},
+  {n:"ゆたかさ",c:"#b07cff",s:"🌟"},
+  {n:"愛されてる",c:"#f0735f",s:"🌸"}
+];
+var KIND={"考えすぎ":"頭の余白","やること":"時間の余白","持ちもの":"空間の余白","人の目":"心の余白","がんばり":"こころの余白"};
+var sel={rel:null,feel:null,feelC:"#ff6fae",feelS:"✦"};
+
+function load(){try{return JSON.parse(localStorage.getItem(RKEY)||"[]");}catch(e){return [];}}
+function save(a){try{localStorage.setItem(RKEY,JSON.stringify(a));}catch(e){}}
+function loadWishes(){try{return JSON.parse(localStorage.getItem(WKEY)||"{}");}catch(e){return {};}}
+function saveWishes(o){try{localStorage.setItem(WKEY,JSON.stringify(o));}catch(e){}}
+function feelBy(n){for(var i=0;i<FEELINGS.length;i++)if(FEELINGS[i].n===n)return FEELINGS[i];return null;}
+function todayStr(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function show(id){var ss=document.querySelectorAll(".screen");for(var i=0;i<ss.length;i++)ss[i].classList.remove("active");$(id).classList.add("active");window.scrollTo(0,0);}
+
+/* わたしのリスト */
+function buildWishForm(){
+  var w=loadWishes();var html="";
+  html+='<div class="wsub">💭 受け取りたいこと（願い）</div>';
+  CATS.forEach(function(c){
+    html+='<div class="wcard" style="border-left-color:'+c.c+'"><label>'+c.s+' '+c.n+'</label><textarea data-cat="'+c.n+'" placeholder="自由に、書いてOK🤍">'+(w[c.n]||"")+'</textarea></div>';
+  });
+  html+='<div class="wsub">🍃 やりたくないこと（手放したい）</div>';
+  html+='<div class="wcard" style="border-left-color:#aab0b6"><textarea data-cat="やりたくないこと" placeholder="気づいたまま、自由に書いてOK🤍（例：気をつかいすぎる／ムダな心配）">'+(w["やりたくないこと"]||"")+'</textarea></div>';
+  html+='<div class="wsub">✨ ときめき・幸せを感じること</div>';
+  html+='<div class="wcard" style="border-left-color:#ffcf5a"><textarea data-cat="ときめき・幸せ" placeholder="例：朝のコーヒー／好きな音楽／褒められること">'+(w["ときめき・幸せ"]||"")+'</textarea></div>';
+  $("wishForm").innerHTML=html;
+}
+
+function buildChipBox(box,items,onpick){
+  box.innerHTML="";
+  items.forEach(function(it){
+    var name=it.n||it, col=it.c||"var(--c3)", stamp=it.s||"";
+    var b=document.createElement("button");b.className="chip";
+    b.innerHTML=(stamp?'<span style="font-size:15px">'+stamp+'</span>':'')+name;
+    b.onclick=function(){
+      box.querySelectorAll(".chip").forEach(function(x){x.classList.remove("on");x.style.background="";x.style.boxShadow="";});
+      b.classList.add("on");b.style.background=col;b.style.boxShadow="0 6px 18px -6px "+col;
+      onpick(name,col,stamp);
+    };
+    box.appendChild(b);
+  });
+}
+
+function renderMonth(){
+  var recs=load();var now=new Date();var y=now.getFullYear(),m=now.getMonth();
+  var ym=y+"-"+String(m+1).padStart(2,"0");
+  var map={};recs.forEach(function(r){if((r.date||"").indexOf(ym)===0 && !map[r.date])map[r.date]=r.feelS||"✦";});
+  var n=Object.keys(map).length;$("mCount").textContent=n;
+  var total=new Date(y,m+1,0).getDate();$("mBar").style.width=Math.round(n/total*100)+"%";
+  var mo=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  $("calH").textContent=mo[m]+" "+y;
+  var first=new Date(y,m,1).getDay();var html="";
+  for(var i=0;i<first;i++)html+='<div class="cell"></div>';
+  for(var d=1;d<=total;d++){var ds=ym+"-"+String(d).padStart(2,"0");
+    html+=map[ds]?'<div class="cell on"><span class="stamp">'+map[ds]+'</span></div>':'<div class="cell">'+d+'</div>';}
+  $("cal").innerHTML=html;
+}
+
+function topOf(arr,key){var c={};arr.forEach(function(r){var v=r[key];if(v)c[v]=(c[v]||0)+1;});var best=null,n=0;Object.keys(c).forEach(function(k){if(c[k]>n){n=c[k];best=k;}});return {name:best,count:c};}
+function renderReport(){
+  var now=new Date();var ym=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+  var recs=load().filter(function(r){return (r.date||"").indexOf(ym)===0;});
+  var body=$("reportBody");
+  if(!recs.length){body.innerHTML='<p class="lead">今月は、まだ空けていません。<br>まず ひとつ、空けてみましょう🤍</p>';return;}
+  var uniq={};recs.forEach(function(r){uniq[r.date]=1;});
+  var tRel=topOf(recs,"release");var tFeel=topOf(recs,"feel");
+  var kind=KIND[tRel.name]||"あなただけの余白";
+  var fc=tFeel.count;var rows="";
+  FEELINGS.forEach(function(f){if(fc[f.n])rows+='<div class="row"><span>'+f.s+' '+f.n+'</span><b style="color:'+f.c+'">'+fc[f.n]+'</b></div>';});
+  Object.keys(fc).forEach(function(k){if(!feelBy(k))rows+='<div class="row"><span>✦ '+k+'</span><b>'+fc[k]+'</b></div>';});
+  body.innerHTML=
+    '<div class="panel"><div class="meter-n">今月、<b>'+recs.length+'</b>回 空けました<br><span style="font-size:12px;color:var(--ink-faint)">（'+Object.keys(uniq).length+'日）</span></div></div>'+
+    '<p class="lead">いちばん手放したのは<br><b>'+(tRel.name||"—")+'</b>。<br><br>あなたは <b>'+kind+'</b> を<br>育てています🤍</p>'+
+    '<p class="lead" style="font-size:13.5px;margin:24px 8px 0">空けた余白に、<br>こんな気持ちを 入れました🤍</p>'+
+    '<div class="panel"><div class="t">✦ あなたが、受け取った気持ち</div><div class="repList" style="margin-top:10px">'+rows+'</div></div>'+
+    '<p class="lead" style="font-size:15px">さあ、今日は<br>何を 手放して、何を 受け取ろう？✨</p>';
+}
+
+function doComplete(){
+  var feel=sel.feel||$("feelText").value.trim();if(!feel)return;
+  var fc=sel.feelC,fs=sel.feelS;
+  if($("feelText").value.trim() && !sel.feel){fc="#ff6fae";fs="✨";}
+  var rel=sel.rel||$("relText").value.trim();
+  var recs=load();recs.push({date:todayStr(),release:rel,feel:feel,feelS:fs});save(recs);
+  var sp=$("space");sp.querySelectorAll(".ring").forEach(function(r){r.remove();});
+  var cols=[fc,"#b07cff","#5aa9f0"];
+  for(var i=0;i<3;i++){var r=document.createElement("div");r.className="ring";r.style.borderColor=cols[i];r.style.animationDelay=(i*0.4)+"s";sp.appendChild(r);}
+  $("doneStamp").textContent=fs;
+  $("doneMsg").innerHTML='<b>'+rel+'</b> を手放した余白に、<br><b style="color:'+fc+'">'+feel+'</b>を 入れました🤍';
+  show("s-done");
+}
+
+function resetSel(){sel={rel:null,feel:null,feelC:"#ff6fae",feelS:"✦"};}
+
+$("relText").addEventListener("input",function(){if(this.value.trim()){$("relChips").querySelectorAll(".chip").forEach(function(c){c.classList.remove("on");c.style.background="";});sel.rel=null;}$("go2").disabled=!(sel.rel||this.value.trim());});
+$("feelText").addEventListener("input",function(){if(this.value.trim()){$("feelChips").querySelectorAll(".chip").forEach(function(c){c.classList.remove("on");c.style.background="";});sel.feel=null;}$("go3").disabled=!(sel.feel||this.value.trim());});
+
+$("go1").onclick=function(){
+  resetSel();$("relText").value="";$("feelText").value="";$("go2").disabled=true;$("go3").disabled=true;
+  buildChipBox($("relChips"),RELEASES,function(name){sel.rel=name;$("relText").value="";$("go2").disabled=false;});
+  show("s-release");
+};
+$("toWish").onclick=function(){buildWishForm();show("s-wish");};
+$("saveWish").onclick=function(){var w={};$("wishForm").querySelectorAll("textarea").forEach(function(t){w[t.getAttribute("data-cat")]=t.value.trim();});saveWishes(w);$("saveWish").textContent="✓ 保存しました";setTimeout(function(){$("saveWish").textContent="保存する";},1500);};
+$("wishHome").onclick=function(){show("s-home");};
+$("back1").onclick=function(){show("s-home");};
+$("go2").onclick=function(){
+  buildChipBox($("feelChips"),FEELINGS,function(name,col,stamp){sel.feel=name;sel.feelC=col;sel.feelS=stamp;$("feelText").value="";$("go3").disabled=false;});
+  show("s-feel");
+};
+$("back2").onclick=function(){show("s-release");};
+$("go3").onclick=doComplete;
+$("toReport").onclick=function(){renderReport();show("s-report");};
+$("repHome").onclick=function(){renderMonth();show("s-home");};
+$("toHome").onclick=function(){resetSel();renderMonth();show("s-home");};
+
+renderMonth();
+</script>
+</body>
+</html>
