@@ -55,7 +55,7 @@
   .wsub{text-align:center;font-size:14.5px;color:var(--ink);font-weight:500;margin:26px 0 2px}
   .wcard{background:rgba(255,255,255,.66);border:1px solid var(--line);border-radius:18px;padding:14px 16px 12px;margin:12px 0;border-left:5px solid}
   .wcard label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);font-weight:500;margin-bottom:7px}
-  .wcard textarea{width:100%;font-family:inherit;font-size:14px;line-height:1.9;color:var(--ink);background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical;min-height:52px}
+  .wcard textarea{width:100%;font-family:inherit;font-size:14px;line-height:1.9;color:var(--ink);background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical;min-height:90px;overflow:hidden}
   .wcard textarea::placeholder{color:var(--ink-faint)}
   .space{position:relative;height:200px;display:flex;align-items:center;justify-content:center;margin:14px 0}
   .ring{position:absolute;border:2px solid;border-radius:50%;opacity:0;animation:open 2.6s ease forwards}
@@ -206,6 +206,12 @@ function buildWishForm(){
   html+='<div class="wsub">✨ リラックスできて、幸せを感じること</div>';
   html+='<div class="wcard" style="border-left-color:#ffcf5a"><textarea data-cat="ときめき・幸せ" placeholder="例：お風呂にゆっくり浸かる／動物と触れ合う／面白い映画を見る">'+(w["ときめき・幸せ"]||"")+'</textarea></div>';
   $("wishForm").innerHTML=html;
+  // 書いた分だけ自動で大きくなる
+  $("wishForm").querySelectorAll("textarea").forEach(function(t){
+    function grow(){t.style.height="auto";t.style.height=(t.scrollHeight+4)+"px";}
+    grow();
+    t.addEventListener("input",grow);
+  });
 }
 
 function buildChipBox(box,items,onpick){
@@ -253,8 +259,8 @@ function renderReport(){
   body.innerHTML=
     '<div class="panel"><div class="meter-n">今月、<b>'+recs.length+'</b>回 空けました<br><span style="font-size:12px;color:var(--ink-faint)">（'+Object.keys(uniq).length+'日）</span></div></div>'+
     '<p class="lead">いちばん手放したのは<br><b>'+(tRel.name||"—")+'</b>。<br><br>あなたは <b>'+kind+'</b> を<br>育てています🤍</p>'+
-    '<p class="lead" style="font-size:13.5px;margin:24px 8px 0">空けた余白に、<br>こんな気持ちを 入れました🤍</p>'+
-    '<div class="panel"><div class="t">✦ あなたが、受け取った気持ち</div><div class="repList" style="margin-top:10px">'+rows+'</div></div>'+
+    '<p class="lead" style="font-size:13.5px;margin:24px 8px 0">空けた余白に、<br>こんな リラックス・幸せを 入れました🤍</p>'+
+    '<div class="panel"><div class="t">✦ あなたが 入れた リラックス・幸せ</div><div class="repList" style="margin-top:10px">'+rows+'</div></div>'+
     '<p class="lead" style="font-size:15px">さあ、今日は<br>何を 手放して、何を 受け取ろう？✨</p>';
 }
 
