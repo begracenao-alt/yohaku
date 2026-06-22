@@ -133,12 +133,13 @@
     <button class="btn btn--ghost" id="back1">もどる</button>
   </section>
 
-  <!-- ②感じたい感情を入れる -->
+  <!-- ②空いた余白に、リラックスできて幸せなことを入れる -->
   <section class="screen" id="s-feel">
-    <div class="qh">空いた余白に、<br>感じたい気持ちを 入れよう<small>RECEIVE</small></div>
+    <div class="qh">空いた余白に、<br>リラックスできて 幸せなことを 入れよう<small>RECEIVE</small></div>
     <div class="step">② 受け取る</div>
+    <p id="feelHint" style="text-align:center;font-size:13px;color:var(--ink-faint);margin:14px 8px 0;letter-spacing:.04em;line-height:1.9"></p>
     <div class="chips" id="feelChips"></div>
-    <div class="field"><input id="feelText" placeholder="自分の言葉で書いてもOK" /></div>
+    <div class="field"><input id="feelText" placeholder="新しく書いてもOK🤍" /></div>
     <button class="btn" id="go3" disabled>余白に、入れる</button>
     <button class="btn btn--ghost" id="back2">もどる</button>
   </section>
@@ -284,8 +285,22 @@ $("toWish").onclick=function(){buildWishForm();show("s-wish");};
 $("saveWish").onclick=function(){var w={};$("wishForm").querySelectorAll("textarea").forEach(function(t){w[t.getAttribute("data-cat")]=t.value.trim();});saveWishes(w);$("saveWish").textContent="✓ 保存しました";setTimeout(function(){$("saveWish").textContent="保存する";},1500);};
 $("wishHome").onclick=function(){show("s-home");};
 $("back1").onclick=function(){show("s-home");};
+// なお様が「わたしのリスト」に書いた「リラックスできて、幸せを感じること」を区切って取り出す
+function splitItems(text){
+  if(!text) return [];
+  return text.split(/[\n、,／\/]+/).map(function(s){return s.trim();}).filter(function(s){return s;});
+}
 $("go2").onclick=function(){
-  buildChipBox($("feelChips"),FEELINGS,function(name,col,stamp){sel.feel=name;sel.feelC=col;sel.feelS=stamp;$("feelText").value="";$("go3").disabled=false;});
+  var w=loadWishes();
+  var items=splitItems(w["ときめき・幸せ"]||"");
+  if(items.length){
+    $("feelHint").textContent="あなたの リスト から 選ぶ：";
+    var opts=items.map(function(n){return {n:n,c:"#ff6fae",s:"✨"};});
+    buildChipBox($("feelChips"),opts,function(name,col,stamp){sel.feel=name;sel.feelC=col;sel.feelS=stamp;$("feelText").value="";$("go3").disabled=false;});
+  } else {
+    $("feelHint").innerHTML="まだ リストが ありません。<br>「わたしのリスト」の <b>リラックスできて、幸せを感じること</b> に 書いておくと、ここに 出ます🤍";
+    $("feelChips").innerHTML="";
+  }
   show("s-feel");
 };
 $("back2").onclick=function(){show("s-release");};
