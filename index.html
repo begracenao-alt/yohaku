@@ -290,7 +290,7 @@ $("go1").onclick=function(){
   var items=splitItems(w["やりたくないこと"]||"");
   if(items.length){
     $("relHint").textContent="あなたの リスト から 選ぶ：";
-    var opts=items.map(function(n){return {n:n,c:"#aab0b6",s:"・"};});
+    var opts=items.map(function(n){return {n:n,c:"#aab0b6",s:""};});
     buildChipBox($("relChips"),opts,function(name){sel.rel=name;$("relText").value="";$("go2").disabled=false;});
   } else {
     $("relHint").innerHTML="まだ リストが ありません。<br>「わたしのリスト」の <b>やりたくないこと</b> に 書いておくと、ここに 出ます🤍";
