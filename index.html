@@ -201,7 +201,7 @@ function buildWishForm(){
     html+='<div class="wcard" style="border-left-color:'+c.c+'"><label>'+c.s+' '+c.n+'</label><textarea data-cat="'+c.n+'" placeholder="'+(c.ph||"自由に、書いてOK🤍")+'">'+(w[c.n]||"")+'</textarea></div>';
   });
   html+='<div class="wsub">🍃 やりたくないこと（手放したい）</div>';
-  html+='<div class="wcard" style="border-left-color:#aab0b6"><textarea data-cat="やりたくないこと" placeholder="睡眠とダラダラした時間は書かないこと🤍">'+(w["やりたくないこと"]||"")+'</textarea></div>';
+  html+='<div class="wcard" style="border-left-color:#aab0b6"><textarea data-cat="やりたくないこと" placeholder="例：節約／婚活アプリ／メイク／事務作業&#10;（睡眠とダラダラした時間は書かないこと🤍）">'+(w["やりたくないこと"]||"")+'</textarea></div>';
   html+='<div class="wsub">✨ リラックスできて、幸せを感じること</div>';
   html+='<div class="wcard" style="border-left-color:#ffcf5a"><textarea data-cat="ときめき・幸せ" placeholder="例：お風呂にゆっくり浸かる／動物と触れ合う／面白い映画を見る">'+(w["ときめき・幸せ"]||"")+'</textarea></div>';
   $("wishForm").innerHTML=html;
