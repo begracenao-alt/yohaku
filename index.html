@@ -165,7 +165,7 @@
 var $=function(id){return document.getElementById(id);};
 var RKEY="yohaku_records", WKEY="yohaku_wishes";
 var CATS=[
-  {n:"Beauty & Health",c:"#ec6fa0",s:"🌸"},
+  {n:"Beauty & Health",c:"#ec6fa0",s:"🌸",ph:"例：スタイルアップ／毎朝ヨガをする／憧れの髪型にする"},
   {n:"お役目",c:"#5aa9f0",s:"💫"},
   {n:"人間関係",c:"#f0735f",s:"💗"},
   {n:"お金",c:"#f0b13a",s:"💰"},
@@ -197,7 +197,7 @@ function buildWishForm(){
   var w=loadWishes();var html="";
   html+='<div class="wsub">💭 受け取りたいこと（願い）</div>';
   CATS.forEach(function(c){
-    html+='<div class="wcard" style="border-left-color:'+c.c+'"><label>'+c.s+' '+c.n+'</label><textarea data-cat="'+c.n+'" placeholder="自由に、書いてOK🤍">'+(w[c.n]||"")+'</textarea></div>';
+    html+='<div class="wcard" style="border-left-color:'+c.c+'"><label>'+c.s+' '+c.n+'</label><textarea data-cat="'+c.n+'" placeholder="'+(c.ph||"自由に、書いてOK🤍")+'">'+(w[c.n]||"")+'</textarea></div>';
   });
   html+='<div class="wsub">🍃 やりたくないこと（手放したい）</div>';
   html+='<div class="wcard" style="border-left-color:#aab0b6"><textarea data-cat="やりたくないこと" placeholder="気づいたまま、自由に書いてOK🤍（例：気をつかいすぎる／ムダな心配）">'+(w["やりたくないこと"]||"")+'</textarea></div>';
