@@ -127,8 +127,9 @@
   <section class="screen" id="s-release">
     <div class="qh">今日、ひとつ 手放そう<small>LET GO</small></div>
     <div class="step">① 手放す</div>
+    <p id="relHint" style="text-align:center;font-size:13px;color:var(--ink-faint);margin:14px 8px 0;letter-spacing:.04em;line-height:1.9"></p>
     <div class="chips" id="relChips"></div>
-    <div class="field"><input id="relText" placeholder="睡眠とダラダラした時間は書かないこと🤍" /></div>
+    <div class="field"><input id="relText" placeholder="新しく書いてもOK🤍" /></div>
     <button class="btn" id="go2" disabled>これを、空ける</button>
     <button class="btn btn--ghost" id="back1">もどる</button>
   </section>
@@ -278,7 +279,16 @@ $("feelText").addEventListener("input",function(){if(this.value.trim()){$("feelC
 
 $("go1").onclick=function(){
   resetSel();$("relText").value="";$("feelText").value="";$("go2").disabled=true;$("go3").disabled=true;
-  buildChipBox($("relChips"),RELEASES,function(name){sel.rel=name;$("relText").value="";$("go2").disabled=false;});
+  var w=loadWishes();
+  var items=splitItems(w["やりたくないこと"]||"");
+  if(items.length){
+    $("relHint").textContent="あなたの リスト から 選ぶ：";
+    var opts=items.map(function(n){return {n:n,c:"#aab0b6",s:"・"};});
+    buildChipBox($("relChips"),opts,function(name){sel.rel=name;$("relText").value="";$("go2").disabled=false;});
+  } else {
+    $("relHint").innerHTML="まだ リストが ありません。<br>「わたしのリスト」の <b>やりたくないこと</b> に 書いておくと、ここに 出ます🤍";
+    $("relChips").innerHTML="";
+  }
   show("s-release");
 };
 $("toWish").onclick=function(){buildWishForm();show("s-wish");};
