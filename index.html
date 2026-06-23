@@ -103,6 +103,7 @@
         <div class="cal-h" id="calH"></div>
         <div class="grid" id="cal"></div>
       </div>
+      <div id="dayDetail" style="margin-top:6px"></div>
       <p class="note">空けた日に、スタンプ。<br>印のない日も、余白。<br>埋めなくて、いい。すきまも、また余白🤍</p>
     </div>
     <button class="btn btn--ghost" id="toReport" style="margin-top:16px">今月の余白を、ふりかえる</button>
@@ -253,8 +254,29 @@ function renderMonth(){
   var first=new Date(y,m,1).getDay();var html="";
   for(var i=0;i<first;i++)html+='<div class="cell"></div>';
   for(var d=1;d<=total;d++){var ds=ym+"-"+String(d).padStart(2,"0");
-    html+=map[ds]?'<div class="cell on"><span class="stamp">'+map[ds]+'</span></div>':'<div class="cell">'+d+'</div>';}
+    html+=map[ds]?'<div class="cell on" data-date="'+ds+'" style="cursor:pointer"><span class="stamp">'+map[ds]+'</span></div>':'<div class="cell">'+d+'</div>';}
   $("cal").innerHTML=html;
+  $("cal").querySelectorAll(".cell.on").forEach(function(el){
+    el.onclick=function(){showDay(el.getAttribute("data-date"));};
+  });
+  $("dayDetail").innerHTML="";
+}
+
+function showDay(ds){
+  var recs=load().filter(function(r){return r.date===ds;});
+  var el=$("dayDetail");if(!el)return;
+  if(!recs.length){el.innerHTML="";return;}
+  var p=ds.split("-");var label=(+p[1])+"/"+(+p[2]);
+  var s='<div style="margin-top:8px;background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:14px;padding:14px 16px;text-align:left">'+
+    '<div style="font-size:13px;color:var(--ink);font-weight:600;letter-spacing:.06em;margin-bottom:8px">'+label+' の 余白</div>';
+  recs.forEach(function(r){
+    s+='<div style="font-size:13px;padding:5px 0;color:var(--ink-soft);line-height:1.8">'+
+      '<span style="color:var(--ink-faint)">手放した：</span>'+(r.release||"—")+
+      '<br><span style="color:var(--ink-faint)">入れた：</span><span style="color:'+(r.feelC||"var(--ink)")+'">'+(r.feelS||"✦")+' '+(r.feel||"—")+'</span>'+
+      '</div>';
+  });
+  s+='</div>';
+  el.innerHTML=s;
 }
 
 function topOf(arr,key){var c={};arr.forEach(function(r){var v=r[key];if(v)c[v]=(c[v]||0)+1;});var best=null,n=0;Object.keys(c).forEach(function(k){if(c[k]>n){n=c[k];best=k;}});return {name:best,count:c};}
