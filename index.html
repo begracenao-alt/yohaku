@@ -97,7 +97,7 @@
 
     <div class="panel">
       <div class="t">This month</div>
-      <div class="meter-n">今月、<b id="mCount">0</b>日 空けました</div>
+      <div class="meter-n"><span id="mLabel">今月、</span><b id="mCount">0</b>日 空けました</div>
       <div class="bar"><i id="mBar" style="width:0%"></i></div>
       <div class="cal">
         <div class="cal-h" id="calH"></div>
@@ -230,14 +230,26 @@ function buildChipBox(box,items,onpick){
   });
 }
 
+var viewY=null,viewM=null;
+function resetMonth(){viewY=null;viewM=null;}
 function renderMonth(){
-  var recs=load();var now=new Date();var y=now.getFullYear(),m=now.getMonth();
+  var recs=load();var now=new Date();
+  var y=(viewY!=null)?viewY:now.getFullYear();
+  var m=(viewM!=null)?viewM:now.getMonth();
+  viewY=y;viewM=m;
   var ym=y+"-"+String(m+1).padStart(2,"0");
   var map={};recs.forEach(function(r){if((r.date||"").indexOf(ym)===0 && !map[r.date])map[r.date]=r.feelS||"✦";});
   var n=Object.keys(map).length;$("mCount").textContent=n;
   var total=new Date(y,m+1,0).getDate();$("mBar").style.width=Math.round(n/total*100)+"%";
+  var isCurrent=(y===now.getFullYear() && m===now.getMonth());
+  $("mLabel").textContent=isCurrent?"今月、":(y+"年"+(m+1)+"月、");
   var mo=["January","February","March","April","May","June","July","August","September","October","November","December"];
-  $("calH").textContent=mo[m]+" "+y;
+  $("calH").innerHTML='<button type="button" id="calPrev" aria-label="前の月" style="background:none;border:0;font-size:20px;color:inherit;cursor:pointer;padding:4px 12px;line-height:1">‹</button>'+
+    '<span style="flex:1;text-align:center">'+mo[m]+" "+y+'</span>'+
+    '<button type="button" id="calNext" aria-label="次の月" style="background:none;border:0;font-size:20px;color:inherit;cursor:pointer;padding:4px 12px;line-height:1">›</button>';
+  $("calH").style.display="flex";$("calH").style.alignItems="center";
+  $("calPrev").onclick=function(){var nm=m-1,ny=y;if(nm<0){nm=11;ny--;}viewY=ny;viewM=nm;renderMonth();};
+  $("calNext").onclick=function(){var nm=m+1,ny=y;if(nm>11){nm=0;ny++;}viewY=ny;viewM=nm;renderMonth();};
   var first=new Date(y,m,1).getDay();var html="";
   for(var i=0;i<first;i++)html+='<div class="cell"></div>';
   for(var d=1;d<=total;d++){var ds=ym+"-"+String(d).padStart(2,"0");
@@ -247,22 +259,40 @@ function renderMonth(){
 
 function topOf(arr,key){var c={};arr.forEach(function(r){var v=r[key];if(v)c[v]=(c[v]||0)+1;});var best=null,n=0;Object.keys(c).forEach(function(k){if(c[k]>n){n=c[k];best=k;}});return {name:best,count:c};}
 function renderReport(){
-  var now=new Date();var ym=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+  var now=new Date();
+  var y=(viewY!=null)?viewY:now.getFullYear();
+  var m=(viewM!=null)?viewM:now.getMonth();
+  viewY=y;viewM=m;
+  var isCurrent=(y===now.getFullYear() && m===now.getMonth());
+  var label=isCurrent?"今月":(y+"年"+(m+1)+"月");
+  var ym=y+"-"+String(m+1).padStart(2,"0");
   var recs=load().filter(function(r){return (r.date||"").indexOf(ym)===0;});
   var body=$("reportBody");
-  if(!recs.length){body.innerHTML='<p class="lead">今月は、まだ空けていません。<br>まず ひとつ、空けてみましょう🤍</p>';return;}
+  var mo=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var navHtml='<div style="display:flex;align-items:center;margin:8px 0 18px">'+
+    '<button type="button" id="repPrev" aria-label="前の月" style="background:none;border:0;font-size:20px;color:inherit;cursor:pointer;padding:4px 12px;line-height:1">‹</button>'+
+    '<span style="flex:1;text-align:center;font-family:\'Cormorant Garamond\',serif;font-style:italic;letter-spacing:.16em;color:var(--ink-soft)">'+mo[m]+' '+y+'</span>'+
+    '<button type="button" id="repNext" aria-label="次の月" style="background:none;border:0;font-size:20px;color:inherit;cursor:pointer;padding:4px 12px;line-height:1">›</button>'+
+  '</div>';
+  function bindNav(){
+    var p=$("repPrev"),nx=$("repNext");
+    if(p)p.onclick=function(){var nm=m-1,ny=y;if(nm<0){nm=11;ny--;}viewY=ny;viewM=nm;renderReport();};
+    if(nx)nx.onclick=function(){var nm=m+1,ny=y;if(nm>11){nm=0;ny++;}viewY=ny;viewM=nm;renderReport();};
+  }
+  if(!recs.length){body.innerHTML=navHtml+'<p class="lead">'+label+'は、まだ空けていません。<br>まず ひとつ、空けてみましょう🤍</p>';bindNav();return;}
   var uniq={};recs.forEach(function(r){uniq[r.date]=1;});
   var tRel=topOf(recs,"release");var tFeel=topOf(recs,"feel");
   var kind=KIND[tRel.name]||"あなただけの余白";
   var fc=tFeel.count;var rows="";
   FEELINGS.forEach(function(f){if(fc[f.n])rows+='<div class="row"><span>'+f.s+' '+f.n+'</span><b style="color:'+f.c+'">'+fc[f.n]+'</b></div>';});
   Object.keys(fc).forEach(function(k){if(!feelBy(k))rows+='<div class="row"><span>✦ '+k+'</span><b>'+fc[k]+'</b></div>';});
-  body.innerHTML=
-    '<div class="panel"><div class="meter-n">今月、<b>'+recs.length+'</b>回 空けました<br><span style="font-size:12px;color:var(--ink-faint)">（'+Object.keys(uniq).length+'日）</span></div></div>'+
+  body.innerHTML=navHtml+
+    '<div class="panel"><div class="meter-n">'+label+'、<b>'+recs.length+'</b>回 空けました<br><span style="font-size:12px;color:var(--ink-faint)">（'+Object.keys(uniq).length+'日）</span></div></div>'+
     '<p class="lead">いちばん手放したのは<br><b>'+(tRel.name||"—")+'</b>。<br><br>あなたは <b>'+kind+'</b> を<br>育てています🤍</p>'+
     '<p class="lead" style="font-size:13.5px;margin:24px 8px 0">空けた余白に、<br>こんな リラックス・幸せを 入れました🤍</p>'+
     '<div class="panel"><div class="t">✦ あなたが 入れた リラックス・幸せ</div><div class="repList" style="margin-top:10px">'+rows+'</div></div>'+
     '<p class="lead" style="font-size:15px">さあ、今日は<br>何を 手放して、何を 受け取ろう？✨</p>';
+  bindNav();
 }
 
 function doComplete(){
@@ -323,8 +353,8 @@ $("go2").onclick=function(){
 $("back2").onclick=function(){show("s-release");};
 $("go3").onclick=doComplete;
 $("toReport").onclick=function(){renderReport();show("s-report");};
-$("repHome").onclick=function(){renderMonth();show("s-home");};
-$("toHome").onclick=function(){resetSel();renderMonth();show("s-home");};
+$("repHome").onclick=function(){resetMonth();renderMonth();show("s-home");};
+$("toHome").onclick=function(){resetSel();resetMonth();renderMonth();show("s-home");};
 
 function exportData(){
   var data={records:load(),wishes:loadWishes(),exportedAt:todayStr(),app:"yohaku",v:1};
